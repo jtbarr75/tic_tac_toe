@@ -46,7 +46,10 @@ const gameboard = (function () {
 
 const displayController = (function (gameboard) {
 
-  var _mark = "O";
+  var _mark = "X";
+  var _running = true;
+
+  _addReset();
 
   for(let i=0; i<9; i++) {
     _addEventListener(i);
@@ -55,7 +58,10 @@ const displayController = (function (gameboard) {
   function render() {
     for(let i=0; i<9; i++) {
       box = _getBox(i);
-      if (gameboard.get(i) != -1) {
+      if (gameboard.get(i) == -1) {
+        box.textContent = "";
+      }
+      else {
         box.textContent = gameboard.get(i);
       }
     }
@@ -64,10 +70,10 @@ const displayController = (function (gameboard) {
   function _addEventListener(index) {
     box = _getBox(index);
     box.addEventListener("click", () => {
-      if (event.target.innerHTML == "") {
-        _switchMark();
+      if (_running &&   event.target.innerHTML == "") {
         gameboard.add(_mark, event.target.dataset.index);
         _checkWin();
+        _switchMark();
         render();
       }
     })
@@ -88,6 +94,13 @@ const displayController = (function (gameboard) {
         _getBox(win[i]).classList.add("win");
       }
     }
+  }
+
+  function _addReset() {
+    document.querySelector(".reset").addEventListener("click", () => {
+      gameboard.clearBoard();
+      render();
+    })
   }
 
   return {
