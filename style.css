@@ -2,4 +2,36 @@
 
 * {
   box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Grid */
+
+.grid {
+  margin: 40px auto 0;
+  width: 600px;
+  height: 600px;
+  /* background-color: #a8dadc; */
+  display: grid;
+  grid-template-columns: 33.33% 33.33% 33.33%;
+  grid-template-rows: 33.33% 33.33% 33.33%;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 60pt;
+}
+.grid :nth-child(3n-1) {
+  border-left: 2px solid black;
+  border-right: 2px solid black;
+}
+.grid :nth-child(n+4):nth-child(-n+6) {
+  border-top: 2px solid black;
+  border-bottom: 2px solid black;
+}
+
+.win {
+  background-color: #e9c46a;
 }
