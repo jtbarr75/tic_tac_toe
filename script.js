@@ -1,6 +1,7 @@
 const gameboard = (function () {
 
   var _board;
+  const length = 9;
   var wins = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]]
   clearBoard();
 
@@ -10,17 +11,13 @@ const gameboard = (function () {
 
   function clearBoard() {
     _board = [];
-    while (_board.length < 10) {
+    while (_board.length < 9) {
       _board.push(-1);
     }
   }
 
   function get(index) {
     return _board[index];
-  }
-
-  function board() {
-    return _board;
   }
 
   function checkWin() {
@@ -39,17 +36,40 @@ const gameboard = (function () {
     add, 
     clearBoard,
     get, 
-    board,
-    checkWin
+    checkWin,
+    length,
+    _board
   }
 })();
+
+const computer = (function (gameboard) {
+
+  function choose() {
+    choices = [];
+    for (let i=0; i<gameboard.length; i++) {
+      if (gameboard.get(i) == -1) {
+        choices.push(i);
+      }
+    }
+    choice = Math.floor(Math.random() * choices.length);
+    console.log(choice);
+    return choice;
+  }
+
+  return {
+    choose
+  }
+})(gameboard);
 
 const displayController = (function (gameboard) {
 
   var _mark = "X";
   var _running = true;
+  var _computer = false;
 
-  _addReset();
+  _addResetButton();
+  _addVsPlayerButton();
+  _addVsComputerButton();
 
   for(let i=0; i<9; i++) {
     _addEventListener(i);
@@ -60,6 +80,9 @@ const displayController = (function (gameboard) {
       box = _getBox(i);
       if (gameboard.get(i) == -1) {
         box.textContent = "";
+        if (box.classList.contains("win")) {
+          box.classList.remove("win");
+        }
       }
       else {
         box.textContent = gameboard.get(i);
@@ -75,6 +98,10 @@ const displayController = (function (gameboard) {
         _checkWin();
         _switchMark();
         render();
+        if (_running && _computer) {
+          _running = false;
+          setTimeout(() => { _computerMove(); }, 1000);
+        }
       }
     })
   }
@@ -90,16 +117,42 @@ const displayController = (function (gameboard) {
   function _checkWin() {
     win = gameboard.checkWin();
     if (win) {
+      _running = false;
       for (let i in win) {
         _getBox(win[i]).classList.add("win");
       }
     }
   }
 
-  function _addReset() {
+  function _computerMove() {
+    gameboard.add(_mark, computer.choose());
+    _checkWin();
+    _switchMark();
+    render();
+    _running = true;
+  }
+
+  function _addResetButton() {
     document.querySelector(".reset").addEventListener("click", () => {
       gameboard.clearBoard();
+      _running = true;
       render();
+    })
+  }
+
+  function _addVsPlayerButton() {
+    document.querySelector(".player").addEventListener("click", () => {
+      event.target.classList.add("selected");
+      document.querySelector(".computer").classList.remove("selected");
+      _computer = false;
+    })
+  }
+
+  function _addVsComputerButton() {
+    document.querySelector(".computer").addEventListener("click", () => {
+      event.target.classList.add("selected");
+      document.querySelector(".player").classList.remove("selected");
+      _computer = true;
     })
   }
 

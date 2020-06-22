@@ -17,6 +17,7 @@
 header {
   display: flex;
   justify-content: space-between;
+  padding: 10px;
 }
 
 button {
@@ -26,6 +27,7 @@ button {
   align-items: center;
   justify-content: center;
   background-color: rgb(42, 157, 143);
+  color: white;
   border: none;
   font-size: 16pt;
 }
@@ -39,10 +41,17 @@ button:last-child {
   border-radius: 0 10px 10px 0;
 }
 
-/* Grid */
+.selected {
+  background-color: rgb(38, 70, 83);
+}
+.selected:hover {
+  background-color: rgb(58, 90, 103);
+}
+
+/* Board */
 
 .grid {
-  margin-top: 30px;
+  margin-top: 50px;
   height: 600px;
   display: grid;
   grid-template-columns: 33.33% 33.33% 33.33%;
