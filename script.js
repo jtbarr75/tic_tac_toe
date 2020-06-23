@@ -48,13 +48,23 @@ const gameboard = (function () {
     return -1;
   }
 
+  function empty() {
+    for (let i=0; i<_board.length; i++) {
+      if (get(i) != -1) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   return {
     add, 
     clearBoard,
     get, 
     checkWin,
     length,
-    blockOrWinLocation
+    blockOrWinLocation,
+    empty
   }
 })();
 
@@ -91,6 +101,7 @@ const computer = (function (board) {
 
 const displayController = (function (gameboard) {
 
+  var _first = true;
   var _mark = "X";
   var _running = true;
   var _computer = false;
@@ -98,6 +109,7 @@ const displayController = (function (gameboard) {
   _addResetButton();
   _addVsPlayerButton();
   _addVsComputerButton();
+  _addChooseMarkButtons();
 
   for(let i=0; i<9; i++) {
     _addEventListener(i);
@@ -125,6 +137,9 @@ const displayController = (function (gameboard) {
         gameboard.add(_mark, event.target.dataset.index);
         _checkWin();
         _switchMark();
+        if (!_computer) {
+          _toggleXO();
+        }
         render();
         if (_running && _computer) {
           _running = false;
@@ -162,10 +177,15 @@ const displayController = (function (gameboard) {
 
   function _addResetButton() {
     document.querySelector(".reset").addEventListener("click", () => {
-      gameboard.clearBoard();
-      _running = true;
-      render();
+      _reset();
     })
+  }
+
+  function _reset() {
+    _mark = "X";
+    gameboard.clearBoard();
+    _running = true;
+    render();
   }
 
   function _addVsPlayerButton() {
@@ -173,8 +193,7 @@ const displayController = (function (gameboard) {
       event.target.classList.add("selected");
       document.querySelector(".computer").classList.remove("selected");
       _computer = false;
-      gameboard.clearBoard();
-      render();
+      _reset();
     })
   }
 
@@ -183,9 +202,43 @@ const displayController = (function (gameboard) {
       event.target.classList.add("selected");
       document.querySelector(".player").classList.remove("selected");
       _computer = true;
-      gameboard.clearBoard();
-      render();
+      if (document.getElementById("O").classList.contains("selected")) {
+        _toggleXO();
+      }
+      _reset();
     })
+  }
+
+  function _addChooseMarkButtons() {
+    xButton = document.getElementById("X");
+    oButton = document.getElementById("O");
+    xButton.addEventListener("click", () => {
+      if (gameboard.empty() && _computer) {
+        _mark = "X";
+        event.target.closest('.score').classList.add("selected");
+        document.getElementById("O").classList.remove("selected");
+      }
+    })
+    oButton.addEventListener("click", () => {
+      if (gameboard.empty() && _computer) {
+        _mark = "X";
+        event.target.closest(".score").classList.add("selected");
+        document.getElementById("X").classList.remove("selected");
+        _computerMove();
+      }
+    })
+  }
+
+  function _toggleXO() {
+    x = document.getElementById("X");
+    o = document.getElementById("O");
+    if (x.classList.contains("selected")) {
+      x.classList.remove("selected");
+      o.classList.add("selected");
+    } else {
+      o.classList.remove("selected");
+      x.classList.add("selected");
+    }
   }
 
   return {

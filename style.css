@@ -41,13 +41,6 @@ button:last-child {
   border-radius: 0 10px 10px 0;
 }
 
-.selected {
-  background-color: rgb(38, 70, 83);
-}
-.selected:hover {
-  background-color: rgb(58, 90, 103);
-}
-
 /* Board */
 
 .grid {
@@ -75,4 +68,44 @@ button:last-child {
 
 .win {
   background-color: #e9c46a;
+}
+
+/* Score */
+
+.scorebox {
+  margin: 0 auto;
+  display: flex;
+  width: 400px;
+}
+
+.score {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 200px;
+  background-color: rgb(42, 157, 143);
+  color: white;
+}
+.score:hover {
+  background-color: rgb(62, 177, 163);
+}
+.score:first-child {
+  border-radius: 10px 0 0 10px;
+}
+.score:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.score span {
+  margin: 10px;
+}
+
+/* Highlighting */
+
+.selected {
+  background-color: rgb(38, 70, 83);
+}
+.selected:hover {
+  background-color: rgb(58, 90, 103);
 }
