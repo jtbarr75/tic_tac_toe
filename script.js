@@ -32,28 +32,56 @@ const gameboard = (function () {
     return false;
   }
 
+  function blockOrWinLocation(mark) {
+    for (let i=0; i<wins.length; i++) {
+      let first = wins[i][0];
+      let second = wins[i][1];
+      let third = wins[i][2];
+      if (get(first) == mark && get(first) == get(second) && get(third) == -1) {
+        return third;
+      } else if (get(second) == mark && get(second) == get(third) && get(first) == -1) {
+        return first;
+      } else if (get(third) == mark && get(first) == get(third) && get(second) == -1) {
+        return second;
+      }
+    }
+    return -1;
+  }
+
   return {
     add, 
     clearBoard,
     get, 
     checkWin,
     length,
-    _board
+    blockOrWinLocation
   }
 })();
 
-const computer = (function (gameboard) {
+const computer = (function (board) {
 
   function choose() {
+    choice1 = board.blockOrWinLocation("O");
+    choice2 = board.blockOrWinLocation("X");
+    if (choice1 != -1) {
+      choice = choice1;
+    } else if (choice2 != -1) {
+      choice = choice2;
+    } else {
+      choices = _getAvailableChoices();
+      choice = choices[Math.floor(Math.random() * choices.length)];
+    }
+    return choice;
+  }
+
+  function _getAvailableChoices() {
     choices = [];
-    for (let i=0; i<gameboard.length; i++) {
-      if (gameboard.get(i) == -1) {
+    for (let i=0; i<board.length; i++) {
+      if (board.get(i) == -1) {
         choices.push(i);
       }
     }
-    choice = Math.floor(Math.random() * choices.length);
-    console.log(choice);
-    return choice;
+    return choices;
   }
 
   return {
@@ -145,6 +173,8 @@ const displayController = (function (gameboard) {
       event.target.classList.add("selected");
       document.querySelector(".computer").classList.remove("selected");
       _computer = false;
+      gameboard.clearBoard();
+      render();
     })
   }
 
@@ -153,6 +183,8 @@ const displayController = (function (gameboard) {
       event.target.classList.add("selected");
       document.querySelector(".player").classList.remove("selected");
       _computer = true;
+      gameboard.clearBoard();
+      render();
     })
   }
 
