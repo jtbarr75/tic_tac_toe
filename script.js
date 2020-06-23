@@ -70,9 +70,12 @@ const gameboard = (function () {
 
 const computer = (function (board) {
 
+  var computerMark = "O";
+  var playerMark = "X";
+
   function choose() {
-    choice1 = board.blockOrWinLocation("O");
-    choice2 = board.blockOrWinLocation("X");
+    choice1 = board.blockOrWinLocation(computerMark);
+    choice2 = board.blockOrWinLocation(playerMark);
     if (choice1 != -1) {
       choice = choice1;
     } else if (choice2 != -1) {
@@ -82,6 +85,13 @@ const computer = (function (board) {
       choice = choices[Math.floor(Math.random() * choices.length)];
     }
     return choice;
+  }
+
+  function setMark(mark) {
+    if (playerMark != computerMark) {
+      this.playerMark = this.computerMark;
+    }
+    this.computerMark = mark;
   }
 
   function _getAvailableChoices() {
@@ -95,13 +105,15 @@ const computer = (function (board) {
   }
 
   return {
-    choose
+    choose,
+    setMark,
+    playerMark,
+    computerMark
   }
 })(gameboard);
 
 const displayController = (function (gameboard) {
 
-  var _first = true;
   var _mark = "X";
   var _running = true;
   var _computer = false;
@@ -185,6 +197,10 @@ const displayController = (function (gameboard) {
     _mark = "X";
     gameboard.clearBoard();
     _running = true;
+    if (document.getElementById("O").classList.contains("selected")) {
+      _toggleXO();
+    }
+    computer.setMark("O");
     render();
   }
 
@@ -192,6 +208,8 @@ const displayController = (function (gameboard) {
     document.querySelector(".player").addEventListener("click", () => {
       event.target.classList.add("selected");
       document.querySelector(".computer").classList.remove("selected");
+      document.getElementById("X").classList.remove("clickable");
+      document.getElementById("O").classList.remove("clickable");
       _computer = false;
       _reset();
     })
@@ -201,10 +219,9 @@ const displayController = (function (gameboard) {
     document.querySelector(".computer").addEventListener("click", () => {
       event.target.classList.add("selected");
       document.querySelector(".player").classList.remove("selected");
+      document.getElementById("X").classList.add("clickable");
+      document.getElementById("O").classList.add("clickable");
       _computer = true;
-      if (document.getElementById("O").classList.contains("selected")) {
-        _toggleXO();
-      }
       _reset();
     })
   }
@@ -215,6 +232,7 @@ const displayController = (function (gameboard) {
     xButton.addEventListener("click", () => {
       if (gameboard.empty() && _computer) {
         _mark = "X";
+        computer.setMark("O");
         event.target.closest('.score').classList.add("selected");
         document.getElementById("O").classList.remove("selected");
       }
@@ -222,6 +240,7 @@ const displayController = (function (gameboard) {
     oButton.addEventListener("click", () => {
       if (gameboard.empty() && _computer) {
         _mark = "X";
+        computer.setMark("X");
         event.target.closest(".score").classList.add("selected");
         document.getElementById("X").classList.remove("selected");
         _computerMove();

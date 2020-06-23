@@ -87,14 +87,15 @@ button:last-child {
   background-color: rgb(42, 157, 143);
   color: white;
 }
-.score:hover {
-  background-color: rgb(62, 177, 163);
-}
 .score:first-child {
   border-radius: 10px 0 0 10px;
 }
 .score:last-child {
   border-radius: 0 10px 10px 0;
+}
+
+.clickable:hover {
+  background-color: rgb(62, 177, 163);
 }
 
 .score span {
@@ -106,6 +107,6 @@ button:last-child {
 .selected {
   background-color: rgb(38, 70, 83);
 }
-.selected:hover {
+.clickable.selected:hover {
   background-color: rgb(58, 90, 103);
 }
