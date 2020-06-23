@@ -134,10 +134,13 @@ const displayController = (function (gameboard) {
         box.textContent = "";
         if (box.classList.contains("win")) {
           box.classList.remove("win");
+        } else {
+          box.classList.add("available");
         }
       }
       else {
         box.textContent = gameboard.get(i);
+        box.classList.remove("available");
       }
     }
   }
